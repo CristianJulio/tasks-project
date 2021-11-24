@@ -1,10 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { CreateTaskDto } from "./dto/createTaskDto";
+import { TasksRepository } from "./tasks.repository";
 
 @Injectable()
 export class TasksService {
+  constructor(private tasksRepository: TasksRepository) { }
+
   getAllTasks() {
-    return `This action returns all tasks`
+    return this.tasksRepository.getAllTask()
   }
 
   getOneTask(id: number) {
