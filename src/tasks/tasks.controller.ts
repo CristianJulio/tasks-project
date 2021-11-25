@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { CreateTaskDto } from "./dto/createTaskDto";
+import { TaskEntity } from "./task.entity";
 import { TasksService } from "./tasks.service";
 
 @Controller('tasks')
@@ -7,17 +8,17 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) { }
 
   @Get()
-  getTasks() {
+  getTasks(): Promise<TaskEntity[]> {
     return this.tasksService.getAllTasks()
   }
 
   @Get(':id')
-  getTask(@Param('id', ParseIntPipe) id: number) {
+  getTask(@Param('id', ParseIntPipe) id: number): Promise<TaskEntity> {
     return this.tasksService.getOneTask(id)
   }
 
   @Post()
-  postTask(@Body() createTaskDto: CreateTaskDto) {
+  postTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEntity> {
     return this.tasksService.createTask(createTaskDto)
   }
 
@@ -27,7 +28,10 @@ export class TasksController {
   }
 
   @Delete(':id')
-  deleteTask(@Param('id', ParseIntPipe) id: number) {
-    return this.tasksService.deleteTask(id)
+  async deleteTask(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    const message = await this.tasksService.deleteTask(id)
+    return {
+      message
+    }
   }
 }
